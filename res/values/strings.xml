@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ulak</string>
+    <string name="send">Gönder</string>
+    <string name="delete">Sil</string>
+    <string name="start">Çalıştır</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
