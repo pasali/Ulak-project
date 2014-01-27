@@ -37,6 +37,18 @@ public class MsgDAO {
 		dbHelper.close();
 		return msg;
 	}
+	
+	public int getLastId() {
+		db = dbHelper.getReadableDatabase();
+		String sql = "SELECT MAX(_id) FROM " + DatabaseHelper.TABLE_MSG;
+		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+		int ID = cursor.getInt(0);
+		cursor.close();
+		dbHelper.close();
+		return ID;
+	}
+	
 	public HashMap<String, String> getAllNo() {
 		HashMap<String, String> numbers = new HashMap<String, String>();
 		db = dbHelper.getReadableDatabase();
