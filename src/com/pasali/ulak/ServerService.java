@@ -51,11 +51,12 @@ public class ServerService extends Service {
 			}
 			h = new Handler(getApplicationContext().getMainLooper());
 			h.post(new Runnable() {
-		        @Override
-		        public void run() {
-		             Toast.makeText(getApplicationContext(),"Bağlantı bekleniyor...",Toast.LENGTH_LONG).show();
-		        }
-		    });
+				@Override
+				public void run() {
+					Toast.makeText(getApplicationContext(),
+							"Bağlantı bekleniyor...", Toast.LENGTH_LONG).show();
+				}
+			});
 			try {
 				clientSocket = serverSocket.accept();
 				h.post(new Runnable() {
@@ -83,28 +84,29 @@ public class ServerService extends Service {
 
 		}
 	}
-	  public void createNotification() {
-		    Intent Oku_intent = new Intent(this, MessagesActivity.class);
-		    Oku_intent.putExtra("id", String.valueOf(msgdao.getLastId()));
-		    PendingIntent p_oku = PendingIntent.getActivity(this, 0, Oku_intent, 0);
-		    
-		    Intent Sil_intent = new Intent();
-		    Sil_intent.setAction("com.pasali.ulak.DEL_INTENT");
-		    Sil_intent.putExtra("id", String.valueOf(msgdao.getLastId()));
-		    PendingIntent p_sil = PendingIntent.getBroadcast(this, 0, Sil_intent, 0);
-		    
-		    
-		    Notification noti = new Notification.Builder(this)
-		        .setContentTitle("Ulak:" + inData[1])
-		        .setContentText(inData[0]).setSmallIcon(R.drawable.ulak)
-		        .setContentIntent(p_oku)
-		        .addAction(R.drawable.del, "Sil", p_sil).build();
-		    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		    
-		    noti.flags |= Notification.FLAG_AUTO_CANCEL;
-		    noti.defaults |= Notification.DEFAULT_SOUND;
-		    notificationManager.notify(0, noti);
 
-		  }
+	public void createNotification() {
+		int last_id = msgdao.getLastId();
+		Intent Oku_intent = new Intent(this, MessagesActivity.class);
+		Oku_intent.putExtra("id", String.valueOf(last_id));
+		PendingIntent p_oku = PendingIntent.getActivity(this, 0, Oku_intent, 0);
+
+		Intent Sil_intent = new Intent();
+		Sil_intent.setAction("com.pasali.ulak.DEL_INTENT");
+		Sil_intent.putExtra("id", String.valueOf(last_id));
+		Sil_intent.putExtra("not_id", 0);
+		PendingIntent p_sil = PendingIntent
+				.getBroadcast(this, 0, Sil_intent, 0);
+		Notification noti = new Notification.Builder(this)
+				.setContentTitle("Ulak:" + inData[1]).setContentText(inData[0])
+				.setSmallIcon(R.drawable.ulak).setContentIntent(p_oku)
+				.addAction(R.drawable.del, "Sil", p_sil).build();
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+		noti.flags |= Notification.FLAG_AUTO_CANCEL;
+		noti.defaults |= Notification.DEFAULT_SOUND;
+		notificationManager.notify(0, noti);
+
+	}
 
 }
