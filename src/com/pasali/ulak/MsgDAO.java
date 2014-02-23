@@ -15,7 +15,7 @@ public class MsgDAO {
 		dbHelper = new DatabaseHelper(context);
 	}
 
-	public void msgAdd(Message msg) {
+	public void addMsg(Message msg) {
 		db = dbHelper.getWritableDatabase();
 		ContentValues vals = new ContentValues();
 		vals.put(DatabaseHelper.COLUMN_NO, msg.getNo());
@@ -63,7 +63,7 @@ public class MsgDAO {
 		return numbers;
 	}
 
-	public void msgDel(long id) {
+	public void delMsg(long id) {
 		db = dbHelper.getWritableDatabase();
         db.delete(DatabaseHelper.TABLE_MSG, DatabaseHelper.COLUMN_ID + " = ?", new String[] { String.valueOf(id) });
         dbHelper.close();

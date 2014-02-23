@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		lv.setOnItemClickListener(this);
 		registerForContextMenu(lv);
 	}
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -102,10 +102,11 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.start:
-			if (!isServerRunning()) {
+			/*if (!isServerRunning()) {
 				Intent serviceIntent = new Intent(this, ServerService.class);
 				startService(serviceIntent);
-			}
+			}*/
+			new ServerOnThread(getApplicationContext()).start();
 			return true;
 		default:
 			return false;
@@ -132,7 +133,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		case R.id.delete:
 			String value = lv.getItemAtPosition(info.position).toString();
 			String dbId = numbers.get(value);
-			msgDao.msgDel(Long.valueOf(dbId));
+			msgDao.delMsg(Long.valueOf(dbId));
 			return true;
 		}
 		return false;

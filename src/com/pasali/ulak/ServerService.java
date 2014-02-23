@@ -72,10 +72,8 @@ public class ServerService extends Service {
 						clientSocket.getInputStream()));
 				while ((inputLine = in.readLine()) != null) {
 					inData = inputLine.split("\\|");
-					System.out.println(inData);
-					msgdao.msgAdd(new Message(inData[1], inData[0]));
+					msgdao.addMsg(new Message(inData[1], inData[0]));
 					createNotification();
-
 				}
 			} catch (IOException e) {
 				System.err.println("Bağlantı hatasi.");
@@ -95,6 +93,7 @@ public class ServerService extends Service {
 		Sil_intent.setAction("com.pasali.ulak.DEL_INTENT");
 		Sil_intent.putExtra("id", String.valueOf(last_id));
 		Sil_intent.putExtra("not_id", 0);
+		
 		PendingIntent p_sil = PendingIntent
 				.getBroadcast(this, 0, Sil_intent, 0);
 		Notification noti = new Notification.Builder(this)

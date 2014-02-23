@@ -19,7 +19,7 @@ public class DeleteReceiver extends BroadcastReceiver{
 		    not_id = extras.getInt("not_id");
 		}
 		MsgDAO del = new MsgDAO(arg0);
-		del.msgDel(Long.valueOf(id));
+		del.delMsg(Long.valueOf(id));
 		NotificationManager nManager = (NotificationManager) arg0.getSystemService(Service.NOTIFICATION_SERVICE);
 		nManager.cancel(not_id);
 	}

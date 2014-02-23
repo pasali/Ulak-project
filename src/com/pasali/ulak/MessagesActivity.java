@@ -38,6 +38,7 @@ public class MessagesActivity extends Activity implements android.view.View.OnCl
 	public void sendMsg() {
 		msg_txt = (EditText) findViewById(R.id.editText1);
 		String pkg = msg_txt.getText().toString() + "|" + msg.getNo();
+		msg_txt.setText("");
 		ServerService.out.print(pkg);
 	}
 	
