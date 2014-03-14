@@ -1,6 +1,7 @@
 package com.pasali.ulak;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,20 +25,19 @@ public class MsgDAO {
 		dbHelper.close();
 	}
 
-	
 	public Message getMsg(long id) {
 		db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.rawQuery("SELECT * FROM "+ DatabaseHelper.TABLE_MSG +" WHERE _id= ?", new String[] { String.valueOf(id) });
+		Cursor cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_MSG
+				+ " WHERE _id= ?", new String[] { String.valueOf(id) });
 		Message msg = null;
-		if (cursor != null && cursor.moveToFirst()){
-			msg = new Message(cursor.getString(1),
-				cursor.getString(2));
+		if (cursor != null && cursor.moveToFirst()) {
+			msg = new Message(cursor.getString(1), cursor.getString(2));
 		}
 		cursor.close();
 		dbHelper.close();
 		return msg;
 	}
-	
+
 	public int getLastId() {
 		db = dbHelper.getReadableDatabase();
 		String sql = "SELECT MAX(_id) FROM " + DatabaseHelper.TABLE_MSG;
@@ -48,15 +48,18 @@ public class MsgDAO {
 		dbHelper.close();
 		return ID;
 	}
-	
-	public HashMap<String, String> getAllNo() {
-		HashMap<String, String> numbers = new HashMap<String, String>();
+
+	public ConcurrentHashMap<String, String> getAllNo() {
+		ConcurrentHashMap<String, String> numbers = new ConcurrentHashMap<String, String>();
 		db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(
 				"select * from " + DatabaseHelper.TABLE_MSG, null);
 		if (cursor.moveToFirst()) {
 			do {
-				numbers.put(cursor.getString(1), String.valueOf(cursor.getInt(0)));
+				numbers.put(
+						cursor.getString(1) + "["
+								+ String.valueOf(cursor.getInt(0) + "]"),
+						String.valueOf(cursor.getInt(0)));
 			} while (cursor.moveToNext());
 		}
 		dbHelper.close();
@@ -65,10 +68,11 @@ public class MsgDAO {
 
 	public void delMsg(long id) {
 		db = dbHelper.getWritableDatabase();
-        db.delete(DatabaseHelper.TABLE_MSG, DatabaseHelper.COLUMN_ID + " = ?", new String[] { String.valueOf(id) });
-        dbHelper.close();
+		db.delete(DatabaseHelper.TABLE_MSG, DatabaseHelper.COLUMN_ID + " = ?",
+				new String[] { String.valueOf(id) });
+		dbHelper.close();
 	}
-	
+
 	public void emptyTable() {
 		db = dbHelper.getWritableDatabase();
 		db.delete(DatabaseHelper.TABLE_MSG, null, null);

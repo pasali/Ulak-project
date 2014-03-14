@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,6 +22,7 @@ public class ServerService extends Service {
 	static PrintWriter out = null;
 	private BufferedReader in = null;
 	private String inputLine;
+	private static final int PORT = 5353;
 	private String[] inData;
 	private MsgDAO msgdao;
 	private Handler h;
@@ -44,7 +44,7 @@ public class ServerService extends Service {
 		public void run() {
 			msgdao = new MsgDAO(getApplicationContext());
 			try {
-				serverSocket = new ServerSocket(1238);
+				serverSocket = new ServerSocket(PORT);
 			} catch (IOException e) {
 				System.err.println("I/O : " + e.getMessage());
 				System.exit(1);
@@ -74,6 +74,7 @@ public class ServerService extends Service {
 					inData = inputLine.split("\\|");
 					msgdao.addMsg(new Message(inData[1], inData[0]));
 					createNotification();
+					
 				}
 			} catch (IOException e) {
 				System.err.println("Bağlantı hatasi.");
@@ -87,7 +88,7 @@ public class ServerService extends Service {
 		int last_id = msgdao.getLastId();
 		Intent Oku_intent = new Intent(this, MessagesActivity.class);
 		Oku_intent.putExtra("id", String.valueOf(last_id));
-		PendingIntent p_oku = PendingIntent.getActivity(this, 0, Oku_intent, 0);
+		PendingIntent p_oku = PendingIntent.getActivity(this, 0, Oku_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Intent Sil_intent = new Intent();
 		Sil_intent.setAction("com.pasali.ulak.DEL_INTENT");
@@ -95,7 +96,7 @@ public class ServerService extends Service {
 		Sil_intent.putExtra("not_id", 0);
 		
 		PendingIntent p_sil = PendingIntent
-				.getBroadcast(this, 0, Sil_intent, 0);
+				.getBroadcast(this, 0, Sil_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification noti = new Notification.Builder(this)
 				.setContentTitle("Ulak:" + inData[1]).setContentText(inData[0])
 				.setSmallIcon(R.drawable.ulak).setContentIntent(p_oku)

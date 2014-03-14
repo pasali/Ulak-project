@@ -39,7 +39,10 @@ public class MessagesActivity extends Activity implements android.view.View.OnCl
 		msg_txt = (EditText) findViewById(R.id.editText1);
 		String pkg = msg_txt.getText().toString() + "|" + msg.getNo();
 		msg_txt.setText("");
-		ServerService.out.print(pkg);
+		ServerService.out.print(pkg + "\n");
+		ServerService.out.flush();
+		System.out.println(pkg);
+		
 	}
 	
 	@Override

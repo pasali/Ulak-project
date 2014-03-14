@@ -1,7 +1,7 @@
 package com.pasali.ulak;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -24,8 +24,8 @@ import android.widget.ListView;
 public class MainActivity extends Activity implements OnItemClickListener {
 
 	private MsgDAO msgDao;
-	private HashMap<String, String> numbers;
-	private ListView lv;
+	private ConcurrentHashMap<String, String> numbers;
+	static ListView lv;
 	private ArrayList<String> keys;
 	private ArrayAdapter<String> adapter;
 
@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		lv.setAdapter(adapter);
 	}
 	
+	
 	private boolean isServerRunning() {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -84,7 +85,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		String dbId = numbers.get(value);
 		showIntent.putExtra("id", dbId);
 		startActivity(showIntent);
-
 	}
 
 	/*
@@ -102,11 +102,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.start:
-			/*if (!isServerRunning()) {
+			if (!isServerRunning()) {
 				Intent serviceIntent = new Intent(this, ServerService.class);
 				startService(serviceIntent);
-			}*/
-			new ServerOnThread(getApplicationContext()).start();
+			}	
 			return true;
 		default:
 			return false;
