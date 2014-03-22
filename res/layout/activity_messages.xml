@@ -8,13 +8,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MessagesActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <Button
         android:id="@+id/button1"
         style="?android:attr/buttonStyleSmall"
@@ -34,5 +27,19 @@
         android:layout_toLeftOf="@+id/button1"
         android:ems="10"
         android:inputType="textMultiLine" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/button1" >
+
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +35,14 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		this.registerReceiver(new BroadcastReceiver() {
+		    @Override
+		    public void onReceive(Context context, Intent intent) {
+		        onResume();
+		    }
+		}, new IntentFilter("UpdateListView"));
+		
 		msgDao = new MsgDAO(this);
 		lv = (ListView) findViewById(R.id.list);
 		numbers = msgDao.getAllNo();
@@ -45,7 +55,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		lv.setOnItemClickListener(this);
 		registerForContextMenu(lv);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -62,18 +72,19 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		});
 		lv.setAdapter(adapter);
 	}
-	
-	
+
 	private boolean isServerRunning() {
-	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	        if (ServerService.class.getName().equals(service.service.getClassName())) {
-	            return true;
-	        }
-	    }
-	    return false;
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager
+				.getRunningServices(Integer.MAX_VALUE)) {
+			if (ServerService.class.getName().equals(
+					service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
 	}
-	
+
 	/*
 	 * Listedeki elemana klik işlemini ekle
 	 */
@@ -82,8 +93,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		Intent showIntent = new Intent(getApplicationContext(),
 				MessagesActivity.class);
 		String value = lv.getItemAtPosition(position).toString();
-		String dbId = numbers.get(value);
-		showIntent.putExtra("id", dbId);
+		showIntent.putExtra("id", value);
 		startActivity(showIntent);
 	}
 
@@ -105,7 +115,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			if (!isServerRunning()) {
 				Intent serviceIntent = new Intent(this, ServerService.class);
 				startService(serviceIntent);
-			}	
+			}
 			return true;
 		default:
 			return false;
@@ -131,8 +141,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		switch (item.getItemId()) {
 		case R.id.delete:
 			String value = lv.getItemAtPosition(info.position).toString();
-			String dbId = numbers.get(value);
-			msgDao.delMsg(Long.valueOf(dbId));
+			msgDao.delAllMsg(value);
+			onResume();
 			return true;
 		}
 		return false;

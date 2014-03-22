@@ -27,7 +27,7 @@
                 </action>
             </intent-filter>
         </receiver>
-
+        
         <activity
             android:name="com.pasali.ulak.MainActivity"
             android:label="@string/app_name" >

@@ -1,5 +1,6 @@
 package com.pasali.ulak;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.ContentValues;
@@ -25,6 +26,21 @@ public class MsgDAO {
 		dbHelper.close();
 	}
 
+	
+	public ArrayList<String> getAllMsgsByNo(String no){
+		ArrayList<String> msgs = new ArrayList<String>();
+		db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_MSG
+				+ " WHERE number= ?", new String[] { no});
+		if (cursor.moveToFirst()) {
+			do {
+				msgs.add(cursor.getString(2));
+			} while (cursor.moveToNext());
+		}
+		return msgs;
+		
+	}
+	
 	public Message getMsg(long id) {
 		db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_MSG
@@ -57,8 +73,7 @@ public class MsgDAO {
 		if (cursor.moveToFirst()) {
 			do {
 				numbers.put(
-						cursor.getString(1) + "["
-								+ String.valueOf(cursor.getInt(0) + "]"),
+						cursor.getString(1),
 						String.valueOf(cursor.getInt(0)));
 			} while (cursor.moveToNext());
 		}
@@ -66,10 +81,17 @@ public class MsgDAO {
 		return numbers;
 	}
 
+	public void delAllMsg(String no) {
+		db = dbHelper.getWritableDatabase();
+		db.delete(DatabaseHelper.TABLE_MSG, DatabaseHelper.COLUMN_NO + " = ?",
+				new String[] {no});
+		dbHelper.close();
+	}
+	
 	public void delMsg(long id) {
 		db = dbHelper.getWritableDatabase();
 		db.delete(DatabaseHelper.TABLE_MSG, DatabaseHelper.COLUMN_ID + " = ?",
-				new String[] { String.valueOf(id) });
+				new String[] { String.valueOf(id)});
 		dbHelper.close();
 	}
 

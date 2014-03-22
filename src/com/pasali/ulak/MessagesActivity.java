@@ -1,33 +1,45 @@
 package com.pasali.ulak;
 
+import java.util.ArrayList;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MessagesActivity extends Activity implements android.view.View.OnClickListener {
 	
 	private String id;
-	private Message msg;
-	private TextView msgview;
+	private ArrayList<String> txts;
+	private int sizeOfText;
+	private TextView[] views;
 	private EditText msg_txt;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
+		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linear);
 		Button gonder = (Button) findViewById(R.id.button1);
 		gonder.setOnClickListener(this);
 		Bundle extras = getIntent().getExtras(); 
 		if(extras != null) {
 		    id = extras.getString("id");
 		}
-		msgview = (TextView) findViewById(R.id.textView1);
-		msg = new MsgDAO(getApplicationContext()).getMsg(Long.valueOf(id));	
-		msgview.setText(msg.getBody());
-		setTitle(msg.getNo());
+		txts = new ArrayList<String>();
+		txts = new MsgDAO(getApplicationContext()).getAllMsgsByNo(id);	
+		sizeOfText = txts.size();
+		views = new TextView[sizeOfText];
+		for (int i = 0; i < sizeOfText; i++) {
+		    final TextView newTextView = new TextView(this);
+		    newTextView.setText(txts.get(i) + "\n");
+		    newTextView.setTextSize(30);  
+		    linearLayout.addView(newTextView);
+		    views[i] = newTextView;
+		}
+		setTitle(id);
 	}
 	
 	public void onClick(View arg0) {
@@ -37,12 +49,10 @@ public class MessagesActivity extends Activity implements android.view.View.OnCl
 	
 	public void sendMsg() {
 		msg_txt = (EditText) findViewById(R.id.editText1);
-		String pkg = msg_txt.getText().toString() + "|" + msg.getNo();
+		String pkg = msg_txt.getText().toString() + "|" + id;
 		msg_txt.setText("");
 		ServerService.out.print(pkg + "\n");
 		ServerService.out.flush();
-		System.out.println(pkg);
-		
 	}
 	
 	@Override
