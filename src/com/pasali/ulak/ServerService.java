@@ -84,22 +84,33 @@ public class ServerService extends Service {
 	}
 
 	public void createNotification() {
+		/*
+		 * Listeyi güncelle
+		 */
 		Intent intent = new Intent("UpdateListView");
 	    this.sendBroadcast(intent);
+	    /*
+	     * Son mesajın id'sini öğren
+	     */
 		int last_id = msgdao.getLastId();
 		Message msg = msgdao.getMsg(last_id);
+		/*
+		 * Bildiri oluştur, oku ve sil butonlarını gerçekle
+		 */
 		Intent Oku_intent = new Intent(this, MessagesActivity.class);
 		Oku_intent.putExtra("id", msg.getNo());
-		PendingIntent p_oku = PendingIntent.getActivity(this, 0, Oku_intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		Intent Sil_intent = new Intent();
 		Sil_intent.setAction("com.pasali.ulak.DEL_INTENT");
-		Sil_intent.putExtra("id", last_id);
+		Sil_intent.putExtra("id", String.valueOf(last_id));
 		Sil_intent.putExtra("not_id", 0);
+		
+		PendingIntent p_oku = PendingIntent.getActivity(this, 0, Oku_intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		PendingIntent p_sil = PendingIntent.getBroadcast(this, 0, Sil_intent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
+		
 		Notification noti = new Notification.Builder(this)
 				.setContentTitle("Ulak:" + inData[1]).setContentText(inData[0])
 				.setSmallIcon(R.drawable.ulak).setContentIntent(p_oku)

@@ -35,14 +35,18 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		/*
+		 * Listview'i güncelleme isteklerini yakala, onResume() metodunu çalıştır
+		 */
 		this.registerReceiver(new BroadcastReceiver() {
 		    @Override
 		    public void onReceive(Context context, Intent intent) {
 		        onResume();
 		    }
 		}, new IntentFilter("UpdateListView"));
-		
+		/*
+		 * Veritabanından mesaj ve numaraları çek, listView'e doldur
+		 */
 		msgDao = new MsgDAO(this);
 		lv = (ListView) findViewById(R.id.list);
 		numbers = msgDao.getAllNo();
@@ -57,6 +61,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	}
 
 	@Override
+	/*
+	 * Veritabanındaki değişiklilere göre listView'i tazele
+	 */
 	protected void onResume() {
 		super.onResume();
 		numbers = msgDao.getAllNo();

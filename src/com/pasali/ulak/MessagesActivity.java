@@ -17,7 +17,12 @@ public class MessagesActivity extends Activity implements android.view.View.OnCl
 	private int sizeOfText;
 	private TextView[] views;
 	private EditText msg_txt;
+	
+	
 	@Override
+	/*
+	 * id'yi al veritabanından ilgili numaraya ait mesajları getir
+	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
@@ -46,7 +51,9 @@ public class MessagesActivity extends Activity implements android.view.View.OnCl
 		sendMsg();
 		
 	}
-	
+	/*
+	 * Cevap mesajını istemciye gönder
+	 */
 	public void sendMsg() {
 		msg_txt = (EditText) findViewById(R.id.editText1);
 		String pkg = msg_txt.getText().toString() + "|" + id;
