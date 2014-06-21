@@ -42,6 +42,9 @@ public class ServerService extends Service {
 	class runServer implements Runnable {
 
 		public void run() {
+			/*
+			 * Sunucuyu çalıştır
+			 */
 			msgdao = new MsgDAO(getApplicationContext());
 			try {
 				serverSocket = new ServerSocket(PORT);
@@ -58,6 +61,9 @@ public class ServerService extends Service {
 				}
 			});
 			try {
+				/*
+				 * Bağlantıları kabul et
+				 */
 				clientSocket = serverSocket.accept();
 				h.post(new Runnable() {
 					@Override
@@ -67,9 +73,15 @@ public class ServerService extends Service {
 								Toast.LENGTH_LONG).show();
 					}
 				});
+				/*
+				 * Gelen ve giden veri yollarını oluştur
+				 */
 				out = new PrintWriter(clientSocket.getOutputStream(), true);
 				in = new BufferedReader(new InputStreamReader(
 						clientSocket.getInputStream()));
+				/*
+				 * İstemciden gelen mesajları al, veritabanına kaydet - bildirim oluştur
+				 */
 				while ((inputLine = in.readLine()) != null) {
 					inData = inputLine.split("\\|");
 					msgdao.addMsg(new Message(inData[1], inData[0]));
@@ -115,6 +127,7 @@ public class ServerService extends Service {
 				.setContentTitle("Ulak:" + inData[1]).setContentText(inData[0])
 				.setSmallIcon(R.drawable.ulak).setContentIntent(p_oku)
 				.addAction(R.drawable.del, "Sil", p_sil).build();
+		
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
